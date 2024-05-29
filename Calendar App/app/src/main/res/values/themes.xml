@@ -1,6 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
     <style name="Base.Theme.CalendarApp" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorAccent">@color/colorAccent</item>
         <item name="windowNoTitle">true</item>
         <item name="android:windowFullscreen">true</item>
     </style>
