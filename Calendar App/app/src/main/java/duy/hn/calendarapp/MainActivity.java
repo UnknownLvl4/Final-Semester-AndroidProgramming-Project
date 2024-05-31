@@ -15,7 +15,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //Khai báo biến toàn cục
-    private int currentDay=0, currentMonth=0, currentYear=0, daysIndex=0;
+    private int ngayHienTai=0,
+                thangHienTai=0,
+                namHienTai=0;
+    private int index=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,7 +28,11 @@ public class MainActivity extends AppCompatActivity {
 
         //Tạo nơi lưu trữ dòng ghi chú
         final List<String> calendarStrings=new ArrayList<>();
-        int[] days=new int[30];
+        final int soNgay=2000;
+        final int[] Ngays=new int[soNgay],
+                    Thangs=new int[soNgay],
+                    Nams=new int[soNgay];
+
         final EditText textInput = findViewById(R.id.textInput);
 
         final View noiDung=findViewById(R.id.noiDung);
@@ -35,18 +42,25 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 //Cập nhật biến toàn cục
-                currentDay=dayOfMonth;
-                currentMonth=month;
-                currentYear=year;
+                ngayHienTai=dayOfMonth;
+                thangHienTai=month;
+                namHienTai=year;
                 if (noiDung.getVisibility()==View.GONE){
                     noiDung.setVisibility(View.VISIBLE);
                 }
 
-
-                for (int i=0; i<30; i++){
-                    if (days[i]==currentDay){
-                        textInput.setText(calendarStrings.get(i));
-                        return;
+                for (int k=0;k<index;k++){
+                    if (Nams[k]==namHienTai){
+                        for (int i=0; i<index; i++){
+                            if (Ngays[i]==ngayHienTai){
+                                for (int j=0;j<index;j++){
+                                    if (Thangs[j]==thangHienTai && Ngays[j]==ngayHienTai && Nams[j]==namHienTai){
+                                        textInput.setText(calendarStrings.get(j));
+                                        return;
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
                 textInput.setText("");
@@ -55,10 +69,13 @@ public class MainActivity extends AppCompatActivity {
         final Button saveBtn = findViewById(R.id.saveBtn);
         //Cài đặt bộ lắng nghe lưu lại dữ liệu sau khi nhấn nút "Lưu"
         saveBtn.setOnClickListener(v -> {                           //Rút gọn sự kiện bằng biểu thức lambda
-            days[daysIndex]=currentDay;
-            calendarStrings.add(daysIndex,textInput.getText().toString());
-            daysIndex++;
+            Ngays[index]=ngayHienTai;
+            Thangs[index]=thangHienTai;
+            Nams[index]=namHienTai;
+            calendarStrings.add(index,textInput.getText().toString());
             textInput.setText("");
+            index++;
+            noiDung.setVisibility(View.GONE);
         });
     }
 }
