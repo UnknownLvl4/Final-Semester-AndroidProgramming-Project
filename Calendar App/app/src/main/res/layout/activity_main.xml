@@ -4,27 +4,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/selectedDay"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/selectedMonth"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:textColor="@color/black" />
-
-    <TextView
-        android:id="@+id/selectedYear"
-        android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:gravity="center"
-        android:textColor="@color/black" />
-
     <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
@@ -34,20 +13,21 @@
         android:id="@+id/noiDung"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <Button
-            android:id="@+id/saveBtn"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:text="Lưu" />
+        android:orientation="horizontal"
+        android:visibility="visible">
 
         <EditText
             android:id="@+id/textInput"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="40dp"
             android:hint="Viết ghi chú sự kiện"
             android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/saveBtn"
+            android:layout_width="60dp"
+            android:layout_height="40dp"
+            android:text="Lưu" />
     </LinearLayout>
 </LinearLayout>

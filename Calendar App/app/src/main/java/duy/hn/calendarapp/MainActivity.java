@@ -15,19 +15,15 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //Khai báo biến toàn cục
-    private int currentDay=0;
-    private int currentMonth=0;
-    private int currentYear=0;
+    private int currentDay=0, currentMonth=0, currentYear=0, daysIndex=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         final CalendarView calendarView = findViewById(R.id.calendarView);
-        final TextView selectedDay = findViewById(R.id.selectedDay);
-        final TextView selectedMonth = findViewById(R.id.selectedMonth);
-        final TextView selectedYear = findViewById(R.id.selectedYear);
 
+        //Tạo nơi lưu trữ dòng ghi chú
         final List<String> calendarStrings=new ArrayList<>();
         int[] days=new int[30];
         final EditText textInput = findViewById(R.id.textInput);
@@ -38,9 +34,6 @@ public class MainActivity extends AppCompatActivity {
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
-                selectedDay.setText("Selected Day:" + dayOfMonth);
-                selectedMonth.setText("Selected Month:" + month);
-                selectedYear.setText("Selected Year:" + year);
                 //Cập nhật biến toàn cục
                 currentDay=dayOfMonth;
                 currentMonth=month;
@@ -48,20 +41,24 @@ public class MainActivity extends AppCompatActivity {
                 if (noiDung.getVisibility()==View.GONE){
                     noiDung.setVisibility(View.VISIBLE);
                 }
-                if (currentDay==days[0]){
-                    textInput.setText(calendarStrings.get(0));
+
+
+                for (int i=0; i<30; i++){
+                    if (days[i]==currentDay){
+                        textInput.setText(calendarStrings.get(i));
+                        return;
+                    }
                 }
+                textInput.setText("");
             }
         });
         final Button saveBtn = findViewById(R.id.saveBtn);
-        //Cai dat bo lang nghe luu lai data sau khi nhan nut "Luu"
-        saveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                days[0]=currentDay;
-                calendarStrings.add(textInput.getText().toString());
-                textInput.setText("");
-            }
+        //Cài đặt bộ lắng nghe lưu lại dữ liệu sau khi nhấn nút "Lưu"
+        saveBtn.setOnClickListener(v -> {                           //Rút gọn sự kiện bằng biểu thức lambda
+            days[daysIndex]=currentDay;
+            calendarStrings.add(daysIndex,textInput.getText().toString());
+            daysIndex++;
+            textInput.setText("");
         });
     }
 }
