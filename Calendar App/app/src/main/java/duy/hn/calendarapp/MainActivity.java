@@ -3,6 +3,7 @@ package duy.hn.calendarapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -10,6 +11,13 @@ import android.widget.CalendarView;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +27,9 @@ public class MainActivity extends AppCompatActivity {
                 thangHienTai=0,
                 namHienTai=0;
     private int index=0;
+
+    private List<String> calendarStrings;
+    private int[] Ngays, Thangs, Nams;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +43,11 @@ public class MainActivity extends AppCompatActivity {
 
         final int soNgay=2000;
 
-        final int[] Ngays=new int[soNgay],
-                    Thangs=new int[soNgay],
-                    Nams=new int[soNgay];
+        Ngays=new int[soNgay];
+        Thangs=new int[soNgay];
+        Nams=new int[soNgay];
+
+        docThongTin();
 
         final EditText textInput = findViewById(R.id.textInput);
 
@@ -90,5 +103,39 @@ public class MainActivity extends AppCompatActivity {
                 calendarView.setDate(calendarView.getDate());
             }
         });
+    }
+    //Xử lý khi tắt ứng dụng hoàn toàn
+    @Override
+    protected void onPause(){
+        super.onPause();
+        luuThongTin();
+    }
+    //Lưu thông tin ghi chú của người dùng vào một tập tin
+    private void luuThongTin(){
+        try {
+            FileWriter fileWriter=new FileWriter("calendarStrings");
+            final int calendarStringsCount = calendarStrings.size();
+            for (int i=0; i<calendarStringsCount;i++){
+                fileWriter.write(calendarStrings.get(i));
+            }
+            fileWriter.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+    //Đọc thông tin từ tập tin
+    private void docThongTin(){
+        try {
+            BufferedReader docTT = new BufferedReader(new FileReader("calendarStrings"));
+            String line= null;
+            while ((line=docTT.readLine())!= null){
+                calendarStrings.add(line);
+            }
+            docTT.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
