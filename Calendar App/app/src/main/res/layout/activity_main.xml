@@ -2,17 +2,22 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
     android:orientation="vertical">
 
     <CalendarView
         android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="500dp"
+        android:layout_height="310dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/bg_calendar" />
 
     <LinearLayout
         android:id="@+id/noiDung"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
         android:orientation="horizontal"
         android:visibility="gone">
 
@@ -22,12 +27,14 @@
             android:layout_height="40dp"
             android:layout_weight="1"
             android:hint="Viết ghi chú sự kiện"
-            android:textColor="@color/black" />
+            android:textColor="@color/white" />
 
         <Button
             android:id="@+id/saveBtn"
             android:layout_width="60dp"
-            android:layout_height="40dp"
-            android:text="Lưu" />
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_btn"
+            android:text="Lưu"
+            android:textColor="@color/white" />
     </LinearLayout>
 </LinearLayout>

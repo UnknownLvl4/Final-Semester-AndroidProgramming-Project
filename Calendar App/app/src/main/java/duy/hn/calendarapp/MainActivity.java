@@ -78,4 +78,5 @@ public class MainActivity extends AppCompatActivity {
             noiDung.setVisibility(View.GONE);
         });
     }
+
 }
