@@ -22,8 +22,8 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     //Khai báo biến toàn cục
     private int ngayHienTai = 0,
-            thangHienTai = 0,
-            namHienTai = 0;
+                thangHienTai = 0,
+                namHienTai = 0;
     private int index = 0;
     private List<String> calendarStrings;
     private int[] Ngay, Thang, Nam;
@@ -65,7 +65,8 @@ public class MainActivity extends AppCompatActivity {
                 int noteIndex = timViTriGhiChu(dayOfMonth, month, year);
                 if (noteIndex != -1) {
                     noiDungNhap.setText(calendarStrings.get(noteIndex));
-                } else {
+                }
+                else {
                     noiDungNhap.setText("");
                 }
             }
@@ -81,7 +82,8 @@ public class MainActivity extends AppCompatActivity {
                 if (existingNoteIndex != -1) {
                     //Cập nhật ghi chú cũ
                     calendarStrings.set(existingNoteIndex, noiDungNhap.getText().toString());
-                } else {
+                }
+                else {
                     // Thêm ghi chú mới
                     Ngay[index] = ngayHienTai;
                     Thang[index] = thangHienTai;
@@ -130,7 +132,6 @@ public class MainActivity extends AppCompatActivity {
              FileOutputStream fOutNam = new FileOutputStream(thongTinNam);
              BufferedWriter bwNam = new BufferedWriter(new OutputStreamWriter(fOutNam))) {
 
-
             for (int i = 0; i < index; i++) {
                 bw.write(calendarStrings.get(i));
                 bw.newLine();
@@ -141,7 +142,6 @@ public class MainActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
     }
 
     //Đọc thông tin từ tập tin
@@ -155,7 +155,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        try (FileInputStream is = new FileInputStream(file);
+        try (FileInputStream is = new FileInputStream(file);                        //Dùng cấu trúc try-with-resources
              BufferedReader docTT = new BufferedReader(new InputStreamReader(is));
              FileInputStream isNgay = new FileInputStream(thongTinNgay);
              BufferedReader docTTNgay = new BufferedReader(new InputStreamReader(isNgay));
