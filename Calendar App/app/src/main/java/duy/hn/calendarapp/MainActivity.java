@@ -3,33 +3,30 @@ package duy.hn.calendarapp;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     //Khai báo biến toàn cục
-    private int ngayHienTai=0,
-                thangHienTai=0,
-                namHienTai=0;
-    private int index=0;
-
+    private int ngayHienTai = 0,
+            thangHienTai = 0,
+            namHienTai = 0;
+    private int index = 0;
     private List<String> calendarStrings;
-    private int[] Ngays, Thangs, Nams;
+    private int[] Ngay, Thang, Nam;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,64 +36,66 @@ public class MainActivity extends AppCompatActivity {
         final CalendarView calendarView = findViewById(R.id.calendarView);
 
         //Tạo nơi lưu trữ dòng ghi chú
-        final List<String> calendarStrings=new ArrayList<>();
+        calendarStrings = new ArrayList<>();
 
-        final int soNgay=2000;
+        final int soNgay = 2000;
 
-        Ngays=new int[soNgay];
-        Thangs=new int[soNgay];
-        Nams=new int[soNgay];
+        Ngay = new int[soNgay];
+        Thang = new int[soNgay];
+        Nam = new int[soNgay];
 
         docThongTin();
 
-        final EditText textInput = findViewById(R.id.textInput);
+        final EditText noiDungNhap = findViewById(R.id.textInput);
 
-        final View noiDung=findViewById(R.id.noiDung);
+        final View noiDung = findViewById(R.id.noiDung);
 
         //Cài đặt bộ lắng nghe khi user nhấn vào một ngày trên lịch
         calendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
             public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 //Cập nhật biến toàn cục
-                ngayHienTai=dayOfMonth;
-                thangHienTai=month;
-                namHienTai=year;
-                if (noiDung.getVisibility()==View.GONE){
+                ngayHienTai = dayOfMonth;
+                thangHienTai = month;
+                namHienTai = year;
+                if (noiDung.getVisibility() == View.GONE) {
                     noiDung.setVisibility(View.VISIBLE);
                 }
 
-                for (int k=0;k<index;k++){
-                    if (Nams[k]==namHienTai){
-                        for (int i=0; i<index; i++){
-                            if (Ngays[i]==ngayHienTai){
-                                for (int j=0;j<index;j++){
-                                    if (Thangs[j]==thangHienTai && Ngays[j]==ngayHienTai && Nams[j]==namHienTai){
-                                        textInput.setText(calendarStrings.get(j));
-                                        return;
-                                    }
-                                }
-                            }
-                        }
-                    }
+                int noteIndex = timViTriGhiChu(dayOfMonth, month, year);
+                if (noteIndex != -1) {
+                    noiDungNhap.setText(calendarStrings.get(noteIndex));
+                } else {
+                    noiDungNhap.setText("");
                 }
-                textInput.setText("");
             }
         });
 
         final Button saveBtn = findViewById(R.id.saveBtn);
         //Cài đặt bộ lắng nghe lưu lại dữ liệu sau khi nhấn nút "Lưu"
-        saveBtn.setOnClickListener(v -> {                           //Rút gọn sự kiện bằng biểu thức lambda
-            Ngays[index]=ngayHienTai;
-            Thangs[index]=thangHienTai;
-            Nams[index]=namHienTai;
-            calendarStrings.add(index,textInput.getText().toString());
-            textInput.setText("");
-            index++;
-            noiDung.setVisibility(View.GONE);
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int existingNoteIndex = timViTriGhiChu(ngayHienTai, thangHienTai, namHienTai);
+
+                if (existingNoteIndex != -1) {
+                    //Cập nhật ghi chú cũ
+                    calendarStrings.set(existingNoteIndex, noiDungNhap.getText().toString());
+                } else {
+                    // Thêm ghi chú mới
+                    Ngay[index] = ngayHienTai;
+                    Thang[index] = thangHienTai;
+                    Nam[index] = namHienTai;
+                    calendarStrings.add(noiDungNhap.getText().toString());
+                    index++;
+                }
+                noiDungNhap.setText("");
+                noiDung.setVisibility(View.GONE);
+            }
         });
 
         //Tạo nút và bộ lắng nghe xử lý chức năng trở về ngày hôm nay
-        final Button todayBtn=findViewById(R.id.todayBtn);
+        final Button todayBtn = findViewById(R.id.todayBtn);
         todayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,38 +103,89 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-    //Xử lý khi tắt ứng dụng hoàn toàn
+
+    //Xử lý khi ngắt hoạt động ứng dụng
     @Override
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         luuThongTin();
     }
+
     //Lưu thông tin ghi chú của người dùng vào một tập tin
-    private void luuThongTin(){
-        try {
-            FileWriter fileWriter=new FileWriter("calendarStrings");
-            final int calendarStringsCount = calendarStrings.size();
-            for (int i=0; i<calendarStringsCount;i++){
-                fileWriter.write(calendarStrings.get(i));
+    private void luuThongTin() {
+        File file = new File(this.getFilesDir(), "saved");
+        File thongTinNgay = new File(this.getFilesDir(), "Ngay");
+        File thongTinThang = new File(this.getFilesDir(), "Month");
+        File thongTinNam = new File(this.getFilesDir(), "Nam");
+
+        try (FileOutputStream fOut = new FileOutputStream(file);                    //Dùng cấu trúc try-with-resources
+             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fOut));
+
+             FileOutputStream fOutNgay = new FileOutputStream(thongTinNgay);
+             BufferedWriter bwNgay = new BufferedWriter(new OutputStreamWriter(fOutNgay));
+
+             FileOutputStream fOutThang = new FileOutputStream(thongTinThang);
+             BufferedWriter bwThang = new BufferedWriter(new OutputStreamWriter(fOutThang));
+
+             FileOutputStream fOutNam = new FileOutputStream(thongTinNam);
+             BufferedWriter bwNam = new BufferedWriter(new OutputStreamWriter(fOutNam))) {
+
+
+            for (int i = 0; i < index; i++) {
+                bw.write(calendarStrings.get(i));
+                bw.newLine();
+                bwNgay.write(Ngay[i]);
+                bwThang.write(Thang[i]);
+                bwNam.write(Nam[i]);
             }
-            fileWriter.close();
-        } catch (IOException e) {
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    //Đọc thông tin từ tập tin
+    private void docThongTin() {
+        File file = new File(this.getFilesDir(), "saved");
+        File thongTinNgay = new File(this.getFilesDir(), "Ngay");
+        File thongTinThang = new File(this.getFilesDir(), "Month");
+        File thongTinNam = new File(this.getFilesDir(), "Nam");
+
+        if (!file.exists()) {
+            return;
+        }
+
+        try (FileInputStream is = new FileInputStream(file);
+             BufferedReader docTT = new BufferedReader(new InputStreamReader(is));
+             FileInputStream isNgay = new FileInputStream(thongTinNgay);
+             BufferedReader docTTNgay = new BufferedReader(new InputStreamReader(isNgay));
+             FileInputStream isThang = new FileInputStream(thongTinThang);
+             BufferedReader docTTThang = new BufferedReader(new InputStreamReader(isThang));
+             FileInputStream isNam = new FileInputStream(thongTinNam);
+             BufferedReader docTTNam = new BufferedReader(new InputStreamReader(isNam))) {
+
+            int i = 0;
+            String dong;                                    //Đọc từng dòng một trong tập tin
+            while ((dong = docTT.readLine()) != null) {
+                calendarStrings.add(dong);
+                Ngay[i] = docTTNgay.read();
+                Thang[i] = docTTThang.read();
+                Nam[i] = docTTNam.read();
+                i++;
+            }
+            index = i;
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    //Đọc thông tin từ tập tin
-    private void docThongTin(){
-        try {
-            BufferedReader docTT = new BufferedReader(new FileReader("calendarStrings"));
-            String line= null;
-            while ((line=docTT.readLine())!= null){
-                calendarStrings.add(line);
+
+    // Tìm vị trí ghi chú theo ngày, tháng, năm
+    private int timViTriGhiChu(int day, int month, int year) {
+        for (int i = 0; i < index; i++) {
+            if (Ngay[i] == day && Thang[i] == month && Nam[i] == year) {
+                return i;
             }
-            docTT.close();
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+        return -1; // Không tìm thấy
     }
 }

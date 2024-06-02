@@ -10,7 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="40dp"
         android:background="@drawable/bg_btn"
-        android:text="Ngày hiện tại" />
+        android:text="Ngày hiện tại"
+        android:textColor="@color/orange"
+        android:textSize="22dp" />
 
     <CalendarView
         android:id="@+id/calendarView"
@@ -24,26 +26,28 @@
         android:id="@+id/noiDung"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
+        android:layout_marginTop="20dp"
         android:orientation="horizontal"
         android:visibility="gone">
 
         <EditText
             android:id="@+id/textInput"
             android:layout_width="0dp"
-            android:layout_height="40dp"
+            android:layout_height="50dp"
             android:layout_weight="1"
-            android:hint="Viết ghi chú sự kiện"
-            android:textColorHint="@color/white"
             android:backgroundTint="@color/colorPrimary"
-            android:textColor="@color/white" />
+            android:hint="Viết ghi chú sự kiện"
+            android:textColor="@color/white"
+            android:textColorHint="@color/white"
+            android:textSize="25dp" />
 
         <Button
             android:id="@+id/saveBtn"
-            android:layout_width="60dp"
+            android:layout_width="70dp"
             android:layout_height="match_parent"
             android:background="@drawable/bg_btn"
             android:text="Lưu"
-            android:textColor="@color/white" />
+            android:textColor="@color/orange"
+            android:textSize="23dp" />
     </LinearLayout>
 </LinearLayout>
