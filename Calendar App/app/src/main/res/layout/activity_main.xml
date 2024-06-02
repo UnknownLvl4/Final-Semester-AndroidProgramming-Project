@@ -5,6 +5,13 @@
     android:background="@color/colorPrimaryDark"
     android:orientation="vertical">
 
+    <Button
+        android:id="@+id/todayBtn"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@drawable/bg_btn"
+        android:text="Ngày hiện tại" />
+
     <CalendarView
         android:id="@+id/calendarView"
         android:layout_width="500dp"

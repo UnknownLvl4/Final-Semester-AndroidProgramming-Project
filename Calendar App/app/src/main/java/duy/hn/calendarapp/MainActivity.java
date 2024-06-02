@@ -24,11 +24,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         final CalendarView calendarView = findViewById(R.id.calendarView);
 
         //Tạo nơi lưu trữ dòng ghi chú
         final List<String> calendarStrings=new ArrayList<>();
+
         final int soNgay=2000;
+
         final int[] Ngays=new int[soNgay],
                     Thangs=new int[soNgay],
                     Nams=new int[soNgay];
@@ -66,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
                 textInput.setText("");
             }
         });
+
         final Button saveBtn = findViewById(R.id.saveBtn);
         //Cài đặt bộ lắng nghe lưu lại dữ liệu sau khi nhấn nút "Lưu"
         saveBtn.setOnClickListener(v -> {                           //Rút gọn sự kiện bằng biểu thức lambda
@@ -77,6 +81,14 @@ public class MainActivity extends AppCompatActivity {
             index++;
             noiDung.setVisibility(View.GONE);
         });
-    }
 
+        //Tạo nút và bộ lắng nghe xử lý chức năng trở về ngày hôm nay
+        final Button todayBtn=findViewById(R.id.todayBtn);
+        todayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                calendarView.setDate(calendarView.getDate());
+            }
+        });
+    }
 }
