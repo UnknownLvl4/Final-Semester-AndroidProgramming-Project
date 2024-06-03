@@ -157,10 +157,13 @@ public class MainActivity extends AppCompatActivity {
 
         try (FileInputStream is = new FileInputStream(file);                        //Dùng cấu trúc try-with-resources
              BufferedReader docTT = new BufferedReader(new InputStreamReader(is));
+
              FileInputStream isNgay = new FileInputStream(thongTinNgay);
              BufferedReader docTTNgay = new BufferedReader(new InputStreamReader(isNgay));
+
              FileInputStream isThang = new FileInputStream(thongTinThang);
              BufferedReader docTTThang = new BufferedReader(new InputStreamReader(isThang));
+
              FileInputStream isNam = new FileInputStream(thongTinNam);
              BufferedReader docTTNam = new BufferedReader(new InputStreamReader(isNam))) {
 
